@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF to Text Converter</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(to bottom, #2196F3, #9C27B0);
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .upload-form {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .upload-form input[type="file"] {
+            display: none;
+        }
+
+        .upload-button {
+            background-color: #ffffff;
+            color: #2196F3;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+        }
+
+        .upload-button:hover {
+            background-color: #2196F3;
+            color: #ffffff;
+        }
+    </style>
+
+</head>
+<body>
+    <h1>.pdf to .txt</h1>
+    <div class="upload-form">
+        <form method="POST" enctype="multipart/form-data" action="/">
+            <label class="upload-button">
+                Выбрать .pdf файл
+                <input type="file" name="file">
+            </label>
+            <button class="upload-button" type="submit">Конвертировать</button>
+        </form>
+    </div>
+    {% if download_link %}
+    <p><a href="{{ download_link }}">Скачать .txt файл</a></p>
+    {% endif %}
+</body>
+</html>
