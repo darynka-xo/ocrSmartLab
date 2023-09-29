@@ -30,12 +30,10 @@ def extract_text_from_pdf(pdf_path):
     for page_num in range(doc.page_count):
         page = doc[page_num]
 
-        # Convert PDF page to an image
-        img = page.get_pixmap(matrix=fitz.Matrix(300 / 72, 300 / 72))  # Adjust resolution as needed
+        img = page.get_pixmap(matrix=fitz.Matrix(300 / 72, 300 / 72))
         img_bytes = img.samples
         img_PIL = Image.frombytes("RGB", [img.width, img.height], img_bytes)
 
-        # Perform OCR on the image
         ocr_text = pytesseract.image_to_string(img_PIL, lang='rus')
         text += ocr_text + "\n"
 
@@ -60,28 +58,22 @@ def insert_tables_into_text(text, tables):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    download_link = None  # Initialize the download_link variable
-    file_generated = False  # Track whether the text file has been generated
+    download_link = None
+    file_generated = False
 
     if request.method == 'POST':
-        # Check if the post request has the file part
         if 'file' not in request.files:
             return redirect(request.url)
         file = request.files['file']
-        # If the user does not select a file, the browser submits an empty part without a filename.
         if file.filename == '':
             return redirect(request.url)
         if file and allowed_file(file.filename):
-            # Save the uploaded PDF file
             filename = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
             file.save(filename)
-
-            # Extract text and tables from PDF
             extracted_tables = extract_tables_from_pdf(filename)
             extracted_text = extract_text_from_pdf(filename)
 
 
-            # Save extracted text to a TXT file
             txt_output_path = filename.replace('.pdf', '.txt')
             save_text_to_file(extracted_text        , txt_output_path)
             if os.path.exists(txt_output_path):
@@ -95,7 +87,6 @@ def index():
 def download_txt_file(filename):
     txt_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
-    # Check if the file exists
     if os.path.exists(txt_file_path):
         return send_file(txt_file_path, as_attachment=True)
     else:

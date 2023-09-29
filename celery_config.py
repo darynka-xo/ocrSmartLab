@@ -4,11 +4,10 @@ from PIL import Image
 import pytesseract
 import fitz
 
-# Initialize Celery
 celery = Celery(
     'app',
-    broker='redis://localhost:6379/0',  # Replace with your Redis server URL
-    backend='redis://localhost:6379/0'  # Replace with your Redis server URL
+    broker='redis://localhost:6379/0',
+    backend='redis://localhost:6379/0'
 )
 
 @celery.task
@@ -33,24 +32,19 @@ def process_pdf(pdf_path):
         for page_num in range(doc.page_count):
             page = doc[page_num]
 
-            # Convert PDF page to an image
-            img = page.get_pixmap(matrix=fitz.Matrix(300 / 72, 300 / 72))  # Adjust resolution as needed
+            img = page.get_pixmap(matrix=fitz.Matrix(300 / 72, 300 / 72))
             img_bytes = img.samples
             img_PIL = Image.frombytes("RGB", [img.width, img.height], img_bytes)
 
-            # Perform OCR on the image
             ocr_text = pytesseract.image_to_string(img_PIL, lang='rus')
             text += ocr_text + "\n"
 
         doc.close()
         return text
-    # Extract tables from PDF
     extracted_tables = extract_tables_from_pdf(pdf_path)
 
-    # Extract text from PDF
     extracted_text = extract_text_from_pdf(pdf_path)
 
-    # Insert tables into the extracted text
     extracted_text_with_tables = insert_tables_into_text(extracted_text, extracted_tables)
 
     return extracted_text_with_tables

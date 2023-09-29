@@ -21,12 +21,10 @@ def extract_text_from_pdf(pdf_path):
     for page_num in range(doc.page_count):
         page = doc[page_num]
 
-        # Convert PDF page to an image
-        img = page.get_pixmap(matrix=fitz.Matrix(300 / 72, 300 / 72))  # Adjust resolution as needed
+        img = page.get_pixmap(matrix=fitz.Matrix(300 / 72, 300 / 72))
         img_bytes = img.samples
         img_PIL = Image.frombytes("RGB", [img.width, img.height], img_bytes)
 
-        # Perform OCR on the image
         ocr_text = pytesseract.image_to_string(img_PIL, lang='rus')
         text += ocr_text + "\n"
 
